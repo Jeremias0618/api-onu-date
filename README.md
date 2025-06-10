@@ -39,10 +39,16 @@ This project is a PHP-based endpoint that exposes a REST API to retrieve the mos
   "count": 10,
   "data": [
     {
-      "id": 1,
-      "snmpindexonu": "...",
-      "fecha": "2025-06-10 12:34:56",
-      ...
+      "id": "48156200",
+      "snmpindexonu": "4194340352.14",
+      "act_susp": "1",
+      "host": "PTP-17",
+      "snmpindex": "4194340352",
+      "slotportonu": "4/14",
+      "onudesc": "74647113",
+      "serialonu": null,
+      "fecha": "2025-06-09 19:04:42",
+      "onulogico": "14"
     }
   ]
 }
