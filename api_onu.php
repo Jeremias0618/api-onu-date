@@ -1,6 +1,11 @@
 <?php
 header('Content-Type: application/json; charset=utf-8');
 
+//Aoi para obtener datos de ONUs desde una base de datos MySQL usando PDO by Yeremi Tantaraico
+//los datos se obtienen de la tabla onu_datos y se ordenan por fecha en orden descendente
+// Asegurarse de que el script se ejecute con la codificación UTF-8 
+// Datos monstrados en pantalla como JSON
+
 // Parámetros de conexión
 $host = '10.80.80.175';
 $port = 3306;
@@ -21,10 +26,10 @@ try {
 }
 
 // Consulta: obtener las últimas 10 entradas ordenadas por fecha descendente
-$sql = "SELECT id, snmpindexonu, act_susp, host, snmpindex, slotportonu, onudesc, serialonu, fecha, onulogico 
+$sql = "SELECT id, snmpindexonu, act_susp, host, snmpindex, slotportonu, onudesc, serialonu, fecha, onulogico
         FROM onu_datos 
         ORDER BY fecha DESC 
-        LIMIT 10";
+        LIMIT 100";
 
 try {
     $stmt = $pdo->query($sql);
