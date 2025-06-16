@@ -10,6 +10,13 @@ $dbname = 'fiberprodata';
 $user = 'fiberproadmin';
 $pass = 'noc12363';
 
+// Lista de hosts permitidos
+$hostsPermitidos = [
+    'SD-1', 'SD-2', 'SD-3', 'SD-4', 'INC-5', 'SD-7', 'JIC-8', 'JIC2-8', 'NEW_JIC-8',
+    'ATE-9', 'SMP-10', 'CAMP-11', 'CAMP2-11', 'PTP-12', 'ANC-13', 'CHO-14',
+    'LO-15', 'LO2-15', 'VIR-16', 'PTP-17', 'VENT-18'
+];
+
 // Crear conexión PDO para PostgreSQL
 try {
     $dsn = "pgsql:host=$host;port=$port;dbname=$dbname";
@@ -22,30 +29,37 @@ try {
     exit;
 }
 
-// Consulta global: contar cantidad de activos y suspendidos en total
+// Preparar la lista para la consulta SQL
+$placeholders = implode(',', array_fill(0, count($hostsPermitidos), '?'));
+
+// Consulta global: contar cantidad de activos y suspendidos en total SOLO para hosts permitidos
 $sqlTotal = "
     SELECT act_susp, COUNT(*) AS cantidad
     FROM onu_datos
+    WHERE host IN ($placeholders)
     GROUP BY act_susp
 ";
 
-// Consulta por host: contar activos y suspendidos agrupados por host
+// Consulta por host: contar activos y suspendidos agrupados por host SOLO para hosts permitidos
 $sqlPorHost = "
     SELECT host, act_susp, COUNT(*) AS cantidad
     FROM onu_datos
+    WHERE host IN ($placeholders)
     GROUP BY host, act_susp
 ";
 
 try {
     // Conteo total
-    $stmtTotal = $pdo->query($sqlTotal);
+    $stmtTotal = $pdo->prepare($sqlTotal);
+    $stmtTotal->execute($hostsPermitidos);
     $totalResult = [];
     while ($row = $stmtTotal->fetch(PDO::FETCH_ASSOC)) {
         $totalResult[$row['act_susp']] = (int)$row['cantidad'];
     }
 
     // Conteo por host
-    $stmtHost = $pdo->query($sqlPorHost);
+    $stmtHost = $pdo->prepare($sqlPorHost);
+    $stmtHost->execute($hostsPermitidos);
     $hostRows = $stmtHost->fetchAll(PDO::FETCH_ASSOC);
 
     // Organizar por host
